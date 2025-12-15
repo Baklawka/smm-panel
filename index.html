@@ -1,0 +1,2776 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>SMM Panel Pro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --rahmat: #00a859;
+            --dark-bg: #0a0a14;
+            --card-bg: #16182e;
+            --card-hover: #1a1d38;
+            --card-border: #252849;
+            --input-bg: #1a1d38;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --text-muted: #718096;
+            --nav-height: 70px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            padding-bottom: var(--nav-height);
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .header-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent) 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 900;
+            border: 3px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .header-avatar:active {
+            transform: scale(0.95);
+        }
+
+        .header-avatar.online::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            background: var(--success);
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+        }
+
+        .header-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-name {
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .header-status {
+            font-size: 11px;
+            opacity: 0.85;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .header-btn {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 12px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .header-btn:active {
+            transform: scale(0.95);
+        }
+
+        .header-btn.admin-toggle {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        .mode-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 16px;
+            height: 16px;
+            background: #ef4444;
+            border-radius: 50%;
+            font-size: 9px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--primary);
+        }
+
+        /* Container */
+        .container {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: calc(100vh - 150px);
+        }
+
+        /* Views */
+        .view {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 24px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .balance-label {
+            font-size: 12px;
+            opacity: 0.9;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-amount {
+            font-size: 40px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .currency {
+            font-size: 20px;
+            opacity: 0.8;
+            font-weight: 700;
+        }
+
+        .balance-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 16px 8px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+
+        .action-btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .action-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .action-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, #1a1f3a 100%);
+            border: 1px solid var(--card-border);
+            padding: 24px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 900;
+            border: 3px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+
+        .profile-details {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .profile-id {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: monospace;
+            background: rgba(255,255,255,0.05);
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .profile-join-date {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .profile-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Referral Card */
+        .referral-card {
+            background: linear-gradient(135deg, var(--rahmat) 0%, #00c96d 100%);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 168, 89, 0.3);
+        }
+
+        .referral-card::before {
+            content: '💰';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 100px;
+            opacity: 0.1;
+        }
+
+        .referral-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .referral-desc {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .referral-code {
+            background: rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .referral-link {
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: 700;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .copy-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .referral-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .referral-stat {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .referral-stat-value {
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 2px;
+        }
+
+        .referral-stat-label {
+            font-size: 10px;
+            opacity: 0.9;
+        }
+
+        /* Section */
+        .section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .see-all {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .see-all:hover {
+            color: var(--secondary);
+        }
+
+        /* Order Card */
+        .order-card {
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .order-card:hover {
+            background: var(--card-hover);
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .order-id {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+
+        .order-service {
+            font-weight: 700;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .order-details {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-price {
+            font-size: 16px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Service Card */
+        .service-card {
+            background: var(--input-bg);
+            border: 2px solid var(--card-border);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-card:active {
+            transform: scale(0.98);
+        }
+
+        .service-card.selected {
+            border-color: var(--primary);
+            background: rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .service-name {
+            font-weight: 700;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .service-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .service-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .service-price {
+            font-size: 18px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .service-limits {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* Transaction Card */
+        .transaction-card {
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .transaction-card:hover {
+            background: var(--card-hover);
+        }
+
+        .transaction-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .transaction-icon.income {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .transaction-icon.expense {
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .transaction-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .transaction-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .transaction-date {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .transaction-amount {
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .transaction-amount.income {
+            color: var(--success);
+        }
+
+        .transaction-amount.expense {
+            color: var(--danger);
+        }
+
+        /* Button */
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            color: var(--text-primary);
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-white {
+            background: rgba(255,255,255,0.95);
+            color: var(--primary);
+            box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+        }
+
+        .btn-rahmat {
+            background: linear-gradient(135deg, var(--rahmat) 0%, #00c96d 100%);
+            box-shadow: 0 4px 15px rgba(0, 168, 89, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: none;
+        }
+
+        .btn-sm {
+            padding: 10px 16px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            background: var(--input-bg);
+            border: 2px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: grid;
+            gap: 12px;
+        }
+
+        .payment-method {
+            background: var(--input-bg);
+            border: 2px solid var(--card-border);
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary);
+        }
+
+        .payment-method.selected {
+            border-color: var(--rahmat);
+            background: rgba(0, 168, 89, 0.1);
+        }
+
+        .payment-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--rahmat);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .payment-info {
+            flex: 1;
+        }
+
+        .payment-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .payment-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .payment-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method.selected .payment-check {
+            border-color: var(--rahmat);
+            background: var(--rahmat);
+        }
+
+        .payment-method.selected .payment-check::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.success { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .badge.warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .badge.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .badge.info { background: rgba(59, 130, 246, 0.15); color: var(--info); }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: var(--card-bg);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 8px;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+
+        .nav-item.active {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.5));
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active .nav-label {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .nav-indicator {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 0 0 3px 3px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-item.active .nav-indicator {
+            opacity: 1;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 20, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.2s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 90%;
+            width: 440px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .close-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--input-bg);
+            border: none;
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 9999;
+            min-width: 280px;
+            max-width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        .toast.info { border-left: 4px solid var(--info); }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .empty-text {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--card-border);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 20, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--card-border);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--text-primary);
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Admin Stats */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .admin-stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 20px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .admin-stat-card:hover {
+            border-color: var(--primary);
+        }
+
+        .admin-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .admin-stat-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .admin-stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-stat-value {
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: -10px;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        th {
+            font-size: 10px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        td {
+            font-size: 13px;
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.02);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .quick-actions {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left" onclick="showView('profile')">
+            <div class="header-avatar online" id="headerAvatar">👤</div>
+            <div class="header-info">
+                <div class="header-name" id="headerName">Загрузка...</div>
+                <div class="header-status" id="headerStatus">Пользователь</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="header-btn admin-toggle" id="adminToggle" style="display: none;" onclick="toggleAdmin()">
+                🎛️
+                <span class="mode-badge" id="modeBadge">A</span>
+            </button>
+            <button class="header-btn" onclick="refreshData()">🔄</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- HOME VIEW -->
+        <div class="view active" id="homeView">
+            <div class="balance-card">
+                <div class="balance-label">💰 Ваш баланс</div>
+                <div class="balance-amount">
+                    <span id="homeBalance">0</span>
+                    <span class="currency">UZS</span>
+                </div>
+                <div class="balance-actions">
+                    <button class="btn btn-white" onclick="showModal('topupModal')">
+                        💳 Пополнить
+                    </button>
+                    <button class="btn btn-white" onclick="showModal('promoModal')">
+                        🎁 Промокод
+                    </button>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="action-btn" onclick="showView('services')">
+                    <span class="action-icon">🛍️</span>
+                    <span class="action-label">Услуги</span>
+                </div>
+                <div class="action-btn" onclick="showView('orders')">
+                    <span class="action-icon">📦</span>
+                    <span class="action-label">Заказы</span>
+                </div>
+                <div class="action-btn" onclick="showView('profile')">
+                    <span class="action-icon">👤</span>
+                    <span class="action-label">Профиль</span>
+                </div>
+                <div class="action-btn" onclick="showModal('supportModal')">
+                    <span class="action-icon">💬</span>
+                    <span class="action-label">Поддержка</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">📦 Последние заказы</div>
+                    <div class="see-all" onclick="showView('orders')">Все →</div>
+                </div>
+                <div id="recentOrders">
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <div class="empty-text">Нет заказов</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SERVICES VIEW -->
+        <div class="view" id="servicesView">
+            <div class="section">
+                <div class="form-group">
+                    <label class="form-label">🎯 Платформа</label>
+                    <select class="form-select" id="platformSelect" onchange="loadCategories()">
+                        <option value="">Выберите платформу...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">📁 Категория</label>
+                    <select class="form-select" id="categorySelect" onchange="loadServices()">
+                        <option value="">Сначала выберите платформу</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="servicesList"></div>
+
+            <div class="section" id="orderForm" style="display: none;">
+                <div class="section-title">📝 Оформление заказа</div>
+                <form onsubmit="createOrder(event)">
+                    <div class="form-group">
+                        <label class="form-label">🔗 Ссылка</label>
+                        <input type="url" class="form-input" id="orderLink" placeholder="https://instagram.com/p/xxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">🔢 Количество</label>
+                        <input type="number" class="form-input" id="orderQty" min="100" oninput="calcTotal()" required>
+                        <small id="qtyLimits" style="color: var(--text-muted); font-size: 11px; display: block; margin-top: 8px;"></small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">💰 К оплате</label>
+                        <div style="font-size: 32px; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: baseline; gap: 8px;">
+                            <span id="orderTotal">0</span>
+                            <span style="font-size: 18px;">UZS</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">✅ Создать заказ</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ORDERS VIEW -->
+        <div class="view" id="ordersView">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="filterOrders('all', event)">Все</button>
+                <button class="tab-btn" onclick="filterOrders('pending', event)">Ожидают</button>
+                <button class="tab-btn" onclick="filterOrders('processing', event)">В работе</button>
+                <button class="tab-btn" onclick="filterOrders('completed', event)">Готовые</button>
+            </div>
+
+            <div id="ordersContainer">
+                <div class="empty-state">
+                    <div class="empty-icon">📦</div>
+                    <div class="empty-text">Загрузка...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFILE VIEW -->
+        <div class="view" id="profileView">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar-large" id="profileAvatar">👤</div>
+                    <div class="profile-details">
+                        <div class="profile-name" id="profileName">Загрузка...</div>
+                        <div class="profile-id">ID: <span id="profileId">0</span></div>
+                        <div class="profile-join-date" id="profileJoinDate">С нами с сегодня</div>
+                    </div>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="profileOrders">0</div>
+                        <div class="stat-label">Заказов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="profileSpent">0</div>
+                        <div class="stat-label">Потрачено</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="profileBalance">0</div>
+                        <div class="stat-label">Баланс</div>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button class="btn" onclick="showModal('topupModal')">💳 Пополнить</button>
+                    <button class="btn btn-secondary" onclick="showModal('settingsModal')">⚙️ Настройки</button>
+                </div>
+            </div>
+
+            <div class="referral-card">
+                <div class="referral-title">🎁 Реферальная программа</div>
+                <div class="referral-desc">Приглашайте друзей и получайте 10% от их пополнений!</div>
+                <div class="referral-code">
+                    <span class="referral-link" id="refLink">t.me/yourbot?start=ref123</span>
+                    <button class="copy-btn" onclick="copyRefLink()">📋 Копировать</button>
+                </div>
+                <div class="referral-stats">
+                    <div class="referral-stat">
+                        <div class="referral-stat-value" id="refInvited">0</div>
+                        <div class="referral-stat-label">Приглашено</div>
+                    </div>
+                    <div class="referral-stat">
+                        <div class="referral-stat-value" id="refEarned">0</div>
+                        <div class="referral-stat-label">Заработано UZS</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">💳 История транзакций</div>
+                <div id="transactionsList">
+                    <div class="empty-state">
+                        <div class="empty-icon">💳</div>
+                        <div class="empty-text">Нет транзакций</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN VIEW -->
+        <div class="view" id="adminView">
+            <div class="admin-stats">
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">👥</div>
+                    <div class="admin-stat-label">Пользователи</div>
+                    <div class="admin-stat-value" id="adminUsers">0</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">📦</div>
+                    <div class="admin-stat-label">Заказы</div>
+                    <div class="admin-stat-value" id="adminOrders">0</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">💰</div>
+                    <div class="admin-stat-label">Доход (UZS)</div>
+                    <div class="admin-stat-value" id="adminRevenue">0</div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">⏳</div>
+                    <div class="admin-stat-label">Активные</div>
+                    <div class="admin-stat-value" id="adminActive">0</div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="adminServices">📋 Услуги</button>
+                <button class="tab-btn" data-tab="adminUsers">👥 Юзеры</button>
+                <button class="tab-btn" data-tab="adminOrders">📦 Заказы</button>
+                <button class="tab-btn" data-tab="adminPromo">🎁 Промо</button>
+                <button class="tab-btn" data-tab="adminSettings">⚙️ Настройки</button>
+            </div>
+
+            <div class="tab-content active" id="adminServicesContent">
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title">📋 Управление услугами</div>
+                        <button class="btn btn-sm" onclick="showModal('addServiceModal')">+ Добавить</button>
+                    </div>
+                    <div id="adminServicesList">
+                        <div class="empty-state">
+                            <div class="empty-icon">⏳</div>
+                            <div class="empty-text">Загрузка...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="adminUsersContent">
+                <div class="section">
+                    <div class="section-title">👥 Пользователи</div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Пользователь</th>
+                                    <th>Баланс</th>
+                                    <th>Заказов</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUsersTable">
+                                <tr><td colspan="4" style="text-align: center;">Загрузка...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="adminOrdersContent">
+                <div class="section">
+                    <div class="section-title">📦 Все заказы</div>
+                    <div id="adminOrdersList">
+                        <div class="empty-state">
+                            <div class="empty-icon">⏳</div>
+                            <div class="empty-text">Загрузка...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="adminPromoContent">
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title">🎁 Промокоды</div>
+                        <button class="btn btn-sm" onclick="showModal('addPromoModal')">+ Создать</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Код</th>
+                                    <th>Бонус (UZS)</th>
+                                    <th>Использований</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminPromoTable">
+                                <tr><td colspan="4" style="text-align: center;">Загрузка...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="adminSettingsContent">
+                <div class="section">
+                    <div class="section-title">⚙️ Настройки системы</div>
+                    <form onsubmit="saveAdminSettings(event)">
+                        <div class="form-group">
+                            <label class="form-label">Мин. сумма пополнения (UZS)</label>
+                            <input type="number" class="form-input" id="minTopupAmount" value="10000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Макс. сумма пополнения (UZS)</label>
+                            <input type="number" class="form-input" id="maxTopupAmount" value="10000000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">SMM API ключ</label>
+                            <input type="text" class="form-input" id="smmApiKey" placeholder="ваш_api_ключ">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rahmat Merchant ID</label>
+                            <input type="text" class="form-input" id="rahmatMerchant" placeholder="merchant_id">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rahmat Secret Key</label>
+                            <input type="password" class="form-input" id="rahmatSecret" placeholder="secret_key">
+                        </div>
+                        <button type="submit" class="btn">💾 Сохранить настройки</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="showView('home')">
+            <div class="nav-indicator"></div>
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">Главная</div>
+        </div>
+        <div class="nav-item" onclick="showView('services')">
+            <div class="nav-indicator"></div>
+            <div class="nav-icon">🛍️</div>
+            <div class="nav-label">Услуги</div>
+        </div>
+        <div class="nav-item" onclick="showView('orders')">
+            <div class="nav-indicator"></div>
+            <div class="nav-icon">📦</div>
+            <div class="nav-label">Заказы</div>
+        </div>
+        <div class="nav-item" onclick="showView('profile')">
+            <div class="nav-indicator"></div>
+            <div class="nav-icon">👤</div>
+            <div class="nav-label">Профиль</div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+
+    <!-- Topup Modal with Rahmat -->
+    <div class="modal" id="topupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">💳 Пополнение баланса</div>
+                <button class="close-btn" onclick="closeModal('topupModal')">×</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Сумма пополнения (UZS)</label>
+                <input type="number" class="form-input" id="topupAmount" min="10000" max="10000000" placeholder="50000" value="50000" oninput="updateTopupPreview()">
+                <small style="color: var(--text-muted); font-size: 11px; display: block; margin-top: 8px;">
+                    Минимум: 10,000 UZS • Максимум: 10,000,000 UZS
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Способ оплаты</label>
+                <div class="payment-methods">
+                    <div class="payment-method selected" data-method="rahmat">
+                        <div class="payment-icon">💳</div>
+                        <div class="payment-info">
+                            <div class="payment-name">Rahmat</div>
+                            <div class="payment-desc">Оплата картой через Rahmat</div>
+                        </div>
+                        <div class="payment-check"></div>
+                    </div>
+                    <!-- Можно добавить другие методы -->
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div style="background: rgba(0, 168, 89, 0.1); border: 1px solid rgba(0, 168, 89, 0.3); padding: 16px; border-radius: 12px;">
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">К оплате:</div>
+                    <div style="font-size: 32px; font-weight: 900; color: var(--rahmat); display: flex; align-items: baseline; gap: 8px;">
+                        <span id="topupPreview">50,000</span>
+                        <span style="font-size: 18px;">UZS</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-rahmat" onclick="processRahmatTopup()">
+                💳 Оплатить через Rahmat
+            </button>
+        </div>
+    </div>
+
+    <!-- Promo Modal -->
+    <div class="modal" id="promoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">🎁 Применить промокод</div>
+                <button class="close-btn" onclick="closeModal('promoModal')">×</button>
+            </div>
+            <form onsubmit="applyPromo(event)">
+                <div class="form-group">
+                    <label class="form-label">Введите код</label>
+                    <input type="text" class="form-input" id="promoCode" placeholder="WELCOME2024" style="text-transform:uppercase" required>
+                </div>
+                <button type="submit" class="btn">✅ Применить промокод</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Support Modal -->
+    <div class="modal" id="supportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">💬 Поддержка</div>
+                <button class="close-btn" onclick="closeModal('supportModal')">×</button>
+            </div>
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="font-size: 64px; margin-bottom: 16px;">💬</div>
+                <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">
+                    Нужна помощь?
+                </div>
+                <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;">
+                    Наша команда поддержки готова ответить на ваши вопросы 24/7
+                </div>
+                <button class="btn" onclick="window.open('https://t.me/support', '_blank')">
+                    📱 Написать в поддержку
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">⚙️ Настройки профиля</div>
+                <button class="close-btn" onclick="closeModal('settingsModal')">×</button>
+            </div>
+            <div style="padding: 20px 0; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 16px;">⚙️</div>
+                <div style="font-size: 14px; color: var(--text-secondary);">
+                    Настройки будут доступны в следующем обновлении
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Service Modal -->
+    <div class="modal" id="addServiceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">➕ Новая услуга</div>
+                <button class="close-btn" onclick="closeModal('addServiceModal')">×</button>
+            </div>
+            <form onsubmit="createService(event)">
+                <div class="form-group">
+                    <label class="form-label">Платформа</label>
+                    <select class="form-select" id="adminPlatform" onchange="loadAdminCategories()" required>
+                        <option value="">Выберите...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Категория</label>
+                    <select class="form-select" id="adminCategory" required>
+                        <option value="">Сначала выберите платформу</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Название</label>
+                    <input type="text" class="form-input" id="serviceName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Описание</label>
+                    <textarea class="form-textarea" id="serviceDesc" placeholder="Описание услуги..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Цена за 1000 (UZS)</label>
+                    <input type="number" class="form-input" id="servicePrice" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Минимальный заказ</label>
+                    <input type="number" class="form-input" id="serviceMin" value="100" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Максимальный заказ</label>
+                    <input type="number" class="form-input" id="serviceMax" value="100000" required>
+                </div>
+                <button type="submit" class="btn">✅ Создать услугу</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Promo Modal -->
+    <div class="modal" id="addPromoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">🎁 Создать промокод</div>
+                <button class="close-btn" onclick="closeModal('addPromoModal')">×</button>
+            </div>
+            <form onsubmit="createPromo(event)">
+                <div class="form-group">
+                    <label class="form-label">Код промокода</label>
+                    <input type="text" class="form-input" id="newPromoCode" placeholder="BONUS100" style="text-transform:uppercase" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Бонус (UZS)</label>
+                    <input type="number" class="form-input" id="promoBonus" placeholder="50000" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Максимум использований</label>
+                    <input type="number" class="form-input" id="promoMaxUses" value="100" required>
+                </div>
+                <button type="submit" class="btn">✅ Создать промокод</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="globalLoading">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // ============= CONFIG =============
+        const API_URL = window.location.origin + '/api';
+
+        let tg = window.Telegram?.WebApp;
+        let authToken = '';
+        let isAdmin = false;
+        let currentView = 'home';
+        let selectedService = null;
+        let userData = {};
+        let allOrders = [];
+
+        if (tg) {
+            tg.expand();
+            tg.ready();
+            tg.setHeaderColor('#667eea');
+            authToken = tg.initData;
+        } else {
+            authToken = 'debug_mode';
+        }
+
+        // ============= UTILS =============
+        function fmt(num) {
+            if (!num) return '0';
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        async function api(endpoint, method = 'GET', data = null) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': authToken || ''
+                }
+            };
+
+            if (data) options.body = JSON.stringify(data);
+
+            try {
+                const res = await fetch(API_URL + endpoint, options);
+                const json = await res.json();
+
+                if (!res.ok) throw new Error(json.detail || 'API Error');
+
+                return json;
+            } catch (err) {
+                toast(err.message, 'error');
+                throw err;
+            }
+        }
+
+        function toast(msg, type = 'info') {
+            const el = document.createElement('div');
+            el.className = `toast ${type}`;
+            el.textContent = msg;
+            document.body.appendChild(el);
+
+            setTimeout(() => el.classList.add('show'), 100);
+            setTimeout(() => {
+                el.classList.remove('show');
+                setTimeout(() => el.remove(), 300);
+            }, 3000);
+        }
+
+        function showModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function showLoading() {
+            document.getElementById('globalLoading').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('globalLoading').classList.remove('active');
+        }
+
+        // ============= VIEW MANAGEMENT =============
+        function showView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+            // Show selected view
+            const viewMap = {
+                'home': 'homeView',
+                'services': 'servicesView',
+                'orders': 'ordersView',
+                'profile': 'profileView',
+                'admin': 'adminView'
+            };
+
+            const viewId = viewMap[viewName];
+            if (viewId) {
+                document.getElementById(viewId).classList.add('active');
+            }
+
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            const navItems = document.querySelectorAll('.nav-item');
+            const navMap = ['home', 'services', 'orders', 'profile'];
+            const index = navMap.indexOf(viewName);
+            if (index >= 0) navItems[index].classList.add('active');
+
+            // Load data
+            if (viewName === 'home') loadHome();
+            else if (viewName === 'services') loadServicesView();
+            else if (viewName === 'orders') loadOrders();
+            else if (viewName === 'profile') loadProfile();
+            else if (viewName === 'admin') loadAdmin();
+
+            currentView = viewName;
+        }
+
+        function toggleAdmin() {
+            if (!isAdmin) {
+                toast('Доступ запрещён', 'error');
+                return;
+            }
+
+            if (currentView === 'admin') {
+                showView('home');
+                document.getElementById('modeBadge').textContent = 'A';
+                toast('Пользовательский режим', 'info');
+            } else {
+                showView('admin');
+                document.getElementById('modeBadge').textContent = 'U';
+                toast('Режим администратора', 'info');
+            }
+        }
+
+        // ============= INIT =============
+        async function init() {
+            try {
+                showLoading();
+
+                const userInfo = await api('/user/info');
+                userData = userInfo;
+                isAdmin = userInfo.is_admin;
+
+                // Update header
+                const initials = userInfo.first_name.charAt(0).toUpperCase();
+                document.getElementById('headerAvatar').textContent = initials;
+                document.getElementById('headerName').textContent = userInfo.first_name;
+                document.getElementById('headerStatus').textContent = isAdmin ? '⭐ Администратор' : '💎 Пользователь';
+
+                if (isAdmin) {
+                    document.getElementById('adminToggle').style.display = 'flex';
+                }
+
+                await loadHome();
+                setupEvents();
+
+                hideLoading();
+                toast(`Добро пожаловать, ${userInfo.first_name}! 👋`, 'success');
+            } catch (err) {
+                hideLoading();
+                toast('Ошибка загрузки данных', 'error');
+            }
+        }
+
+        function setupEvents() {
+            // Admin tabs
+            document.querySelectorAll('[data-tab]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tab = this.getAttribute('data-tab');
+                    switchAdminTab(tab);
+                });
+            });
+
+            // Payment methods
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.addEventListener('click', function() {
+                    document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Close modals on backdrop click
+            document.addEventListener('click', e => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.classList.remove('active');
+                }
+            });
+        }
+
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('[data-tab]').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Content').classList.add('active');
+
+            if (tabName === 'adminServices') loadAdminServices();
+            else if (tabName === 'adminUsers') loadAdminUsers();
+            else if (tabName === 'adminOrders') loadAdminOrders();
+            else if (tabName === 'adminPromo') loadAdminPromo();
+        }
+
+        // ============= HOME =============
+        async function loadHome() {
+            try {
+                const balance = await api('/user/balance');
+                document.getElementById('homeBalance').textContent = fmt(balance.balance);
+
+                const orders = await api('/orders');
+                allOrders = orders;
+
+                const recentOrders = orders.slice(0, 3);
+
+                if (recentOrders.length > 0) {
+                    document.getElementById('recentOrders').innerHTML = recentOrders.map(o => `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <span class="order-id">${o.order_id}</span>
+                                <span class="badge ${statusClass(o.status)}">${statusText(o.status)}</span>
+                            </div>
+                            <div class="order-service">${o.service_name}</div>
+                            <div class="order-details">${fmt(o.quantity)} шт.</div>
+                            <div class="order-footer">
+                                <span class="order-price">${fmt(o.total_price)} UZS</span>
+                                <small style="color: var(--text-muted); font-size: 10px;">${formatDate(o.created_at)}</small>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('recentOrders').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📦</div>
+                            <div class="empty-text">Нет заказов</div>
+                        </div>
+                    `;
+                }
+
+                await loadPlatforms();
+            } catch (err) {
+                console.error('Failed to load home:', err);
+            }
+        }
+
+        // ============= SERVICES =============
+        async function loadServicesView() {
+            await loadPlatforms();
+        }
+
+        async function loadPlatforms() {
+            try {
+                const platforms = await api('/platforms');
+                const select = document.getElementById('platformSelect');
+                const adminSelect = document.getElementById('adminPlatform');
+
+                const options = '<option value="">Выберите платформу...</option>' +
+                    platforms.map(p => `<option value="${p.id}">${p.icon} ${p.name}</option>`).join('');
+
+                select.innerHTML = options;
+                if (adminSelect) adminSelect.innerHTML = options;
+            } catch (err) {
+                console.error('Failed to load platforms:', err);
+            }
+        }
+
+        async function loadCategories() {
+            const platformId = document.getElementById('platformSelect').value;
+            const catSelect = document.getElementById('categorySelect');
+
+            if (!platformId) {
+                catSelect.innerHTML = '<option value="">Сначала выберите платформу</option>';
+                document.getElementById('servicesList').innerHTML = '';
+                document.getElementById('orderForm').style.display = 'none';
+                return;
+            }
+
+            try {
+                const categories = await api(`/categories/${platformId}`);
+                catSelect.innerHTML = '<option value="">Выберите категорию...</option>' +
+                    categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                document.getElementById('servicesList').innerHTML = '';
+                document.getElementById('orderForm').style.display = 'none';
+            } catch (err) {
+                console.error('Failed to load categories:', err);
+            }
+        }
+
+        async function loadServices() {
+            const catId = document.getElementById('categorySelect').value;
+            const list = document.getElementById('servicesList');
+
+            if (!catId) {
+                list.innerHTML = '';
+                document.getElementById('orderForm').style.display = 'none';
+                return;
+            }
+
+            try {
+                const services = await api(`/services/${catId}`);
+
+                if (services.length === 0) {
+                    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🛍️</div><div class="empty-text">Нет услуг</div></div>';
+                    return;
+                }
+
+                list.innerHTML = services.map(s => `
+                    <div class="service-card" onclick='selectService(${JSON.stringify(s).replace(/'/g, "&apos;")})'>
+                        <div class="service-header">
+                            <div class="service-name">${s.name}</div>
+                            <div class="service-badge">⚡ Быстро</div>
+                        </div>
+                        <div class="service-desc">${s.description || 'Качественная накрутка без списаний'}</div>
+                        <div class="service-footer">
+                            <div class="service-price">${fmt(s.price_per_k)} UZS/1K</div>
+                            <div class="service-limits">Мин: ${fmt(s.min_order)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Failed to load services:', err);
+            }
+        }
+
+        function selectService(service) {
+            selectedService = service;
+
+            document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            document.getElementById('orderForm').style.display = 'block';
+            document.getElementById('qtyLimits').textContent = `Мин: ${fmt(service.min_order)} • Макс: ${fmt(service.max_order)}`;
+            document.getElementById('orderQty').min = service.min_order;
+            document.getElementById('orderQty').max = service.max_order;
+            document.getElementById('orderQty').value = service.min_order;
+
+            calcTotal();
+
+            // Scroll to form
+            document.getElementById('orderForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function calcTotal() {
+            if (!selectedService) return;
+
+            const qty = parseInt(document.getElementById('orderQty').value) || 0;
+            const total = Math.ceil((qty / 1000) * selectedService.price_per_k);
+            document.getElementById('orderTotal').textContent = fmt(total);
+        }
+
+        async function createOrder(e) {
+            e.preventDefault();
+            if (!selectedService) return;
+
+            const orderData = {
+                service_id: selectedService.id,
+                link: document.getElementById('orderLink').value.trim(),
+                quantity: parseInt(document.getElementById('orderQty').value)
+            };
+
+            try {
+                showLoading();
+                const result = await api('/orders', 'POST', orderData);
+                hideLoading();
+
+                toast(`✅ Заказ создан! ${result.order_id}`, 'success');
+
+                // Reset form
+                document.getElementById('orderLink').value = '';
+                document.getElementById('orderQty').value = '';
+                document.getElementById('orderForm').style.display = 'none';
+                selectedService = null;
+
+                // Update balance
+                document.getElementById('homeBalance').textContent = fmt(result.new_balance);
+
+                // Go to orders
+                setTimeout(() => showView('orders'), 1000);
+            } catch (err) {
+                hideLoading();
+            }
+        }
+
+        // ============= ORDERS =============
+        async function loadOrders(filter = 'all') {
+            try {
+                if (allOrders.length === 0) {
+                    allOrders = await api('/orders');
+                }
+
+                const container = document.getElementById('ordersContainer');
+
+                let filtered = allOrders;
+                if (filter !== 'all') {
+                    filtered = allOrders.filter(o => o.status === filter);
+                }
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">Нет заказов</div></div>';
+                    return;
+                }
+
+                container.innerHTML = filtered.map(o => `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span class="order-id">${o.order_id}</span>
+                            <span class="badge ${statusClass(o.status)}">${statusText(o.status)}</span>
+                        </div>
+                        <div class="order-service">${o.service_name}</div>
+                        <div class="order-details">${o.service_detail || ''} • ${fmt(o.quantity)} шт.</div>
+                        <div class="order-footer">
+                            <span class="order-price">${fmt(o.total_price)} UZS</span>
+                            <small style="color: var(--text-muted); font-size: 10px;">${formatDate(o.created_at)}</small>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Failed to load orders:', err);
+            }
+        }
+
+        function filterOrders(status, event) {
+            document.querySelectorAll('#ordersView .tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (event) event.currentTarget.classList.add('active');
+            loadOrders(status);
+        }
+
+        // ============= PROFILE =============
+        async function loadProfile() {
+            try {
+                const balance = await api('/user/balance');
+                const orders = allOrders.length > 0 ? allOrders : await api('/orders');
+
+                const initials = userData.first_name.charAt(0).toUpperCase();
+                document.getElementById('profileAvatar').textContent = initials;
+                document.getElementById('profileName').textContent = userData.first_name || 'Пользователь';
+                document.getElementById('profileId').textContent = userData.telegram_id;
+
+                // Join date
+                const joinDate = userData.created_at ? new Date(userData.created_at) : new Date();
+                document.getElementById('profileJoinDate').textContent = `С нами с ${formatDate(joinDate)}`;
+
+                // Stats
+                document.getElementById('profileOrders').textContent = orders.length;
+
+                const totalSpent = orders.reduce((sum, o) => sum + (o.total_price || 0), 0);
+                document.getElementById('profileSpent').textContent = fmt(totalSpent);
+                document.getElementById('profileBalance').textContent = fmt(balance.balance);
+
+                // Referral
+                const refLink = `https://t.me/yourbot?start=ref${userData.telegram_id}`;
+                document.getElementById('refLink').textContent = refLink;
+
+                // Referral stats (mock for now)
+                document.getElementById('refInvited').textContent = userData.referrals_count || 0;
+                document.getElementById('refEarned').textContent = fmt(userData.referral_earnings || 0);
+
+                // Transactions (mock for now)
+                loadTransactions();
+            } catch (err) {
+                console.error('Failed to load profile:', err);
+            }
+        }
+
+        function loadTransactions() {
+            // Mock transactions
+            const transactions = [
+                { id: 1, type: 'income', title: 'Пополнение через Rahmat', amount: 50000, date: new Date() },
+                { id: 2, type: 'expense', title: 'Заказ #12345', amount: -15000, date: new Date() }
+            ];
+
+            const list = document.getElementById('transactionsList');
+
+            if (transactions.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-icon">💳</div><div class="empty-text">Нет транзакций</div></div>';
+                return;
+            }
+
+            list.innerHTML = transactions.map(t => `
+                <div class="transaction-card">
+                    <div class="transaction-left">
+                        <div class="transaction-icon ${t.type}">
+                            ${t.type === 'income' ? '💰' : '📦'}
+                        </div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">${t.title}</div>
+                            <div class="transaction-date">${formatDate(t.date)}</div>
+                        </div>
+                    </div>
+                    <div class="transaction-amount ${t.type}">
+                        ${t.amount > 0 ? '+' : ''}${fmt(Math.abs(t.amount))} UZS
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function copyRefLink() {
+            const link = document.getElementById('refLink').textContent;
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(link);
+                toast('📋 Ссылка скопирована!', 'success');
+            } else {
+                // Fallback
+                const input = document.createElement('input');
+                input.value = link;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                toast('📋 Ссылка скопирована!', 'success');
+            }
+        }
+
+        // ============= TOPUP & PROMO =============
+        function updateTopupPreview() {
+            const amount = parseInt(document.getElementById('topupAmount').value) || 0;
+            document.getElementById('topupPreview').textContent = fmt(amount);
+        }
+
+        async function processRahmatTopup() {
+            const amount = parseInt(document.getElementById('topupAmount').value);
+
+            if (!amount || amount < 10000) {
+                toast('Минимальная сумма: 10,000 UZS', 'error');
+                return;
+            }
+
+            if (amount > 10000000) {
+                toast('Максимальная сумма: 10,000,000 UZS', 'error');
+                return;
+            }
+
+            try {
+                showLoading();
+
+                // Create payment
+                const payment = await api('/payment/rahmat/create', 'POST', { amount });
+
+                hideLoading();
+                closeModal('topupModal');
+
+                // Open Rahmat payment page
+                if (payment.payment_url) {
+                    window.open(payment.payment_url, '_blank');
+                    toast('Перенаправление на оплату...', 'info');
+                } else {
+                    toast('✅ Платёж создан! ID: ' + payment.payment_id, 'success');
+                }
+            } catch (err) {
+                hideLoading();
+                toast('Ошибка создания платежа', 'error');
+            }
+        }
+
+        async function applyPromo(e) {
+            e.preventDefault();
+            const code = document.getElementById('promoCode').value.toUpperCase().trim();
+
+            if (!code) {
+                toast('Введите промокод', 'error');
+                return;
+            }
+
+            try {
+                showLoading();
+                const result = await api(`/promo/apply?code=${code}`, 'POST');
+                hideLoading();
+
+                toast(`🎁 Промокод активирован! +${fmt(result.bonus)} UZS`, 'success');
+                closeModal('promoModal');
+
+                // Update balance
+                document.getElementById('homeBalance').textContent = fmt(result.new_balance);
+                document.getElementById('profileBalance').textContent = fmt(result.new_balance);
+
+                document.getElementById('promoCode').value = '';
+            } catch (err) {
+                hideLoading();
+            }
+        }
+
+        // ============= ADMIN =============
+        async function loadAdmin() {
+            try {
+                const stats = await api('/admin/stats');
+                document.getElementById('adminUsers').textContent = fmt(stats.total_users);
+                document.getElementById('adminOrders').textContent = fmt(stats.total_orders);
+                document.getElementById('adminRevenue').textContent = fmt(stats.total_revenue);
+                document.getElementById('adminActive').textContent = fmt(stats.pending_orders);
+
+                await loadAdminServices();
+            } catch (err) {
+                console.error('Failed to load admin:', err);
+            }
+        }
+
+        async function loadAdminServices() {
+            try {
+                const services = await api('/admin/services');
+                const list = document.getElementById('adminServicesList');
+
+                if (services.length === 0) {
+                    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Нет услуг</div></div>';
+                    return;
+                }
+
+                list.innerHTML = services.map(s => `
+                    <div class="service-card">
+                        <div class="service-header">
+                            <div class="service-name">
+                                <small style="color: var(--text-muted);">${s.platform_name} • ${s.category_name}</small><br>
+                                <strong>${s.name}</strong>
+                            </div>
+                            <span class="badge ${s.is_active ? 'success' : 'danger'}">${s.is_active ? 'Активна' : 'Выкл'}</span>
+                        </div>
+                        <div class="service-footer">
+                            <div class="service-price">${fmt(s.price_per_k)} UZS/1K</div>
+                            <button class="btn btn-sm btn-danger" onclick="deleteService(${s.id})">🗑️</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Failed to load admin services:', err);
+            }
+        }
+
+        async function loadAdminUsers() {
+            try {
+                const data = await api('/admin/users');
+                const tbody = document.getElementById('adminUsersTable');
+
+                if (data.users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Нет пользователей</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.users.map(u => `
+                    <tr>
+                        <td>
+                            <strong>${u.first_name}</strong><br>
+                            <small style="color: var(--text-muted);">@${u.username || 'none'}</small>
+                        </td>
+                        <td>${fmt(u.balance)} UZS</td>
+                        <td>${u.orders_count || 0}</td>
+                        <td>
+                            <button class="btn btn-sm ${u.is_blocked ? 'btn-secondary' : 'btn-danger'}" onclick="blockUser(${u.telegram_id}, ${!u.is_blocked})">
+                                ${u.is_blocked ? '✅ Разблок.' : '🚫 Блок'}
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Failed to load users:', err);
+            }
+        }
+
+        async function loadAdminOrders() {
+            try {
+                const orders = await api('/admin/orders');
+                const list = document.getElementById('adminOrdersList');
+
+                if (orders.length === 0) {
+                    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">Нет заказов</div></div>';
+                    return;
+                }
+
+                list.innerHTML = orders.slice(0, 50).map(o => `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span class="order-id">${o.order_id}</span>
+                            <span class="badge ${statusClass(o.status)}">${statusText(o.status)}</span>
+                        </div>
+                        <div class="order-details">
+                            <strong>@${o.username || o.user_id}</strong> • ${o.service_name}
+                        </div>
+                        <div class="order-footer">
+                            <span class="order-price">${fmt(o.total_price)} UZS</span>
+                            <small style="color: var(--text-muted); font-size: 10px;">${formatDate(o.created_at)}</small>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Failed to load admin orders:', err);
+            }
+        }
+
+        async function loadAdminPromo() {
+            try {
+                const promos = await api('/admin/promocodes');
+                const tbody = document.getElementById('adminPromoTable');
+
+                if (promos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Нет промокодов</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = promos.map(p => `
+                    <tr>
+                        <td><strong>${p.code}</strong></td>
+                        <td>${fmt(p.bonus_amount || 0)}</td>
+                        <td>${p.used_count}/${p.max_uses}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deletePromo('${p.code}')">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Failed to load promo:', err);
+            }
+        }
+
+        async function loadAdminCategories() {
+            const platformId = document.getElementById('adminPlatform').value;
+            const catSelect = document.getElementById('adminCategory');
+
+            if (!platformId) {
+                catSelect.innerHTML = '<option value="">Сначала выберите платформу</option>';
+                return;
+            }
+
+            try {
+                const categories = await api(`/categories/${platformId}`);
+                catSelect.innerHTML = '<option value="">Выберите категорию...</option>' +
+                    categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            } catch (err) {
+                console.error('Failed to load admin categories:', err);
+            }
+        }
+
+        async function createService(e) {
+            e.preventDefault();
+
+            const data = {
+                category_id: parseInt(document.getElementById('adminCategory').value),
+                name: document.getElementById('serviceName').value.trim(),
+                description: document.getElementById('serviceDesc').value.trim(),
+                price_per_k: parseInt(document.getElementById('servicePrice').value),
+                min_order: parseInt(document.getElementById('serviceMin').value),
+                max_order: parseInt(document.getElementById('serviceMax').value)
+            };
+
+            try {
+                showLoading();
+                await api('/admin/services', 'POST', data);
+                hideLoading();
+
+                toast('✅ Услуга создана!', 'success');
+                closeModal('addServiceModal');
+
+                // Reset form
+                document.getElementById('serviceName').value = '';
+                document.getElementById('serviceDesc').value = '';
+                document.getElementById('servicePrice').value = '';
+
+                loadAdminServices();
+            } catch (err) {
+                hideLoading();
+            }
+        }
+
+        async function deleteService(id) {
+            if (!confirm('Удалить услугу?')) return;
+
+            try {
+                showLoading();
+                await api(`/admin/services/${id}`, 'DELETE');
+                hideLoading();
+
+                toast('Услуга удалена', 'success');
+                loadAdminServices();
+            } catch (err) {
+                hideLoading();
+            }
+        }
+
+        async function blockUser(id, block) {
+            try {
+                showLoading();
+                await api(`/admin/users/${id}/block`, 'PUT', {is_blocked: block});
+                hideLoading();
+
+                toast(block ? 'Пользователь заблокирован' : 'Пользователь разблокирован', 'success');
+                loadAdminUsers();
+            } catch (err) {
+                hideLoading();
+            }
+        }
+
+        async function createPromo(e) {
+            e.preventDefault();
+
+            const data = {
+                code: document.getElementById('newPromoCode').value.toUpperCase().trim(),
+                bonus_amount: parseInt(document.getElementById('promoBonus').value),
+                max_uses: parseInt(document.getElementById('promoMaxUses').value),
+                expires_at: null
+            };
+
+            try {
+                showLoading();
+                await api('/admin/promocodes', 'POST', data);
+                hideLoading();
+
+                toast('🎁 Промокод создан!', 'success');
+                closeModal('addPromoModal');
+
+                // Reset form
+                document.getElementById('newPromoCode').value = '';
+                document.getElementById('promoBonus').value = '';
+
+                loadAdminPromo();
+            } catch (err) {
+                hideLoading();
+            }
+        }
+
+        async function deletePromo(code) {
+            if (!confirm(`Удалить промокод ${code}?`)) return;
+
+            try {
+                showLoading();
+                await api(`/admin/promocodes/${code}`, 'DELETE');
+                hideLoading();
+
+                toast('Промокод удалён', 'success');
+                loadAdminPromo();
+            } catch (err) {
+                hideLoading();
+            }
+        }
+
+        async function saveAdminSettings(e) {
+            e.preventDefault();
+            toast('Настройки будут сохранены в следующем обновлении', 'info');
+        }
+
+        // ============= HELPERS =============
+        function statusClass(status) {
+            return {
+                'completed': 'success',
+                'processing': 'warning',
+                'pending': 'info',
+                'cancelled': 'danger'
+            }[status] || 'info';
+        }
+
+        function statusText(status) {
+            return {
+                'pending': '⏳ Ожидает',
+                'processing': '🔄 Выполняется',
+                'completed': '✅ Готово',
+                'cancelled': '❌ Отменён'
+            }[status] || status;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diff = now - date;
+
+            // Less than 1 minute
+            if (diff < 60000) return 'Только что';
+
+            // Less than 1 hour
+            if (diff < 3600000) {
+                const mins = Math.floor(diff / 60000);
+                return `${mins} мин. назад`;
+            }
+
+            // Less than 24 hours
+            if (diff < 86400000) {
+                const hours = Math.floor(diff / 3600000);
+                return `${hours} ч. назад`;
+            }
+
+            // Default
+            return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function refreshData() {
+            if (currentView === 'home') loadHome();
+            else if (currentView === 'services') loadServicesView();
+            else if (currentView === 'orders') { allOrders = []; loadOrders(); }
+            else if (currentView === 'profile') loadProfile();
+            else if (currentView === 'admin') loadAdmin();
+
+            toast('Обновлено ✅', 'success');
+        }
+
+        // ============= START =============
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
